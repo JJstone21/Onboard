@@ -965,7 +965,7 @@ function renderCart() {
   const cntEl = document.getElementById('cartItemCount');
   const totEl = document.getElementById('cartTotalDisp');
   const inqEl = document.getElementById('cartInqLabel');
-  if(cntEl) cntEl.textContent = cart.length > 0 ? '(' + cart.length + ')' : '';
+  if(cntEl) cntEl.textContent = cart.length > 0 ? cart.length + '개' : '';
   if(totEl) totEl.textContent = '₩' + total.toLocaleString();
   // inqLabel removed
 
