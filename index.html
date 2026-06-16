@@ -344,7 +344,7 @@ a{text-decoration:none;}
 .drw-sum-inq{font-size:11px;color:rgba(255,255,255,.7);text-align:right;}
 
 /* 바디 */
-.drw-body{flex:1;overflow-y:auto;padding:12px;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;}
+.drw-body{flex:1;overflow-y:auto;padding:0;background:#fff;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;}
 .drw-body::-webkit-scrollbar{width:4px;}
 .drw-body::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px;}
 
@@ -356,60 +356,86 @@ a{text-decoration:none;}
 .cart-empty svg{width:56px;height:56px;opacity:.25;}
 .cart-empty p{font-size:13px;line-height:1.7;}
 
-/* 아이템 */
+/* 아이템 — 컴팩트 리스트형 */
 .c-item{
-  background:#fff;border-radius:var(--r12);
-  padding:0;margin-bottom:8px;overflow:hidden;
-  box-shadow:var(--sh-sm);transition:box-shadow .15s;
+  background:#fff;
+  padding:11px 14px;
+  border-bottom:1px solid var(--bd2);
+  display:grid;
+  grid-template-columns:1fr auto;
+  grid-template-rows:auto auto;
+  gap:6px 10px;
+  align-items:center;
 }
-.c-item:hover{box-shadow:var(--sh-md);}
+.c-item:last-child{border-bottom:none;}
 
+/* 상단: 상품명 + 삭제 */
 .c-item-hd{
-  display:flex;align-items:flex-start;gap:10px;
-  padding:12px 14px 8px;
-}
-.c-item-num{
-  width:22px;height:22px;border-radius:50%;flex-shrink:0;
-  background:var(--grad);color:#fff;
-  font-size:10px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;margin-top:1px;
+  grid-column:1;grid-row:1;
+  display:flex;align-items:flex-start;gap:4px;min-width:0;
 }
 .c-item-info{flex:1;min-width:0;}
-.c-item-name{font-size:13px;font-weight:600;color:var(--tx1);line-height:1.4;margin-bottom:2px;}
-.c-item-opt{font-size:11px;color:var(--tx3);}
+.c-item-name{font-size:12px;font-weight:500;color:var(--tx3);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.c-item-opt{font-size:13px;font-weight:600;color:var(--tx1);line-height:1.3;margin-top:1px;}
 .c-item-rm{
-  background:none;border:none;width:28px;height:28px;border-radius:var(--r8);
+  background:none;border:none;width:22px;height:22px;
   display:flex;align-items:center;justify-content:center;
-  color:var(--tx3);transition:all .15s;flex-shrink:0;
+  color:var(--tx3);transition:color .15s;flex-shrink:0;margin-top:1px;
 }
-.c-item-rm:hover{background:var(--bd2);color:var(--red);}
-.c-item-rm svg{width:14px;height:14px;}
+.c-item-rm:hover{color:var(--red);}
+.c-item-rm svg{width:13px;height:13px;}
 
-.c-item-ft{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:8px 14px 12px;border-top:1px solid var(--bd2);
-}
-.c-item-price{font-size:14px;font-weight:700;color:var(--p);}
-.c-item-inq{font-size:12px;color:var(--tx3);font-style:italic;}
-
-/* 수량 조절 */
+/* 수량 (우측 상단) */
 .c-qty{
+  grid-column:2;grid-row:1;
   display:flex;align-items:center;
-  background:var(--bg);border-radius:var(--r50);overflow:hidden;
+  border:1.5px solid var(--bd);border-radius:var(--r8);
+  background:#fff;height:30px;align-self:end;
 }
 .cq-btn{
-  width:28px;height:28px;border:none;background:transparent;
-  color:var(--tx2);display:flex;align-items:center;justify-content:center;transition:all .1s;
+  width:26px;height:28px;border:none;background:transparent;
+  color:var(--tx2);display:flex;align-items:center;justify-content:center;
+  transition:all .1s;
 }
-.cq-btn:hover{background:var(--p-dim);color:var(--p);}
-.cq-btn svg{width:14px;height:14px;}
+.cq-btn:hover{color:var(--p);}
+.cq-btn svg{width:13px;height:13px;}
 .cq-num{
-  min-width:28px;text-align:center;font-size:13px;font-weight:700;
-  color:var(--tx1);padding:0 2px;
+  min-width:26px;text-align:center;font-size:13px;font-weight:700;
+  color:var(--tx1);border-inline:1.5px solid var(--bd);height:100%;
+  display:flex;align-items:center;justify-content:center;
 }
 
+/* 하단: 가격 + VAT */
+.c-item-ft{
+  grid-column:1;grid-row:2;
+  display:flex;align-items:center;gap:6px;
+}
+.c-item-price{font-size:14px;font-weight:700;color:var(--tx1);}
+.c-item-vat{font-size:10px;color:var(--tx3);}
+.c-item-inq{font-size:12px;color:var(--tx3);font-style:italic;}
+
 /* 푸터 */
-.drw-ftr{padding:12px;border-top:1px solid var(--bd);flex-shrink:0;background:#fff;}
+.drw-ftr{padding:14px 16px;border-top:1.5px solid var(--bd);flex-shrink:0;background:#fff;}
+.drw-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.drw-total-lbl{font-size:13px;color:var(--tx2);font-weight:500;}
+.drw-total-val{font-size:17px;font-weight:800;color:var(--tx1);}
+.drw-ftr-btns{display:flex;gap:8px;}
+.drw-clear-btn{
+  flex:0 0 auto;background:none;border:1.5px solid var(--bd);
+  color:var(--tx2);border-radius:var(--r8);
+  padding:0 16px;height:44px;font-size:13px;font-weight:500;
+  transition:all .15s;white-space:nowrap;
+}
+.drw-clear-btn:hover{border-color:var(--red);color:var(--red);}
+.quote-btn{
+  flex:1;background:var(--grad);color:#fff;border:none;
+  border-radius:var(--r8);height:44px;font-size:14px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  box-shadow:0 4px 14px rgba(98,70,234,.3);transition:all .15s;
+}
+.quote-btn:hover{opacity:.9;}
+.quote-btn:active{transform:scale(.98);}
+.quote-btn:disabled{background:#e0e0e0;box-shadow:none;color:#aaa;}
 .quote-btn{
   width:100%;background:var(--grad);color:#fff;border:none;
   border-radius:var(--r12);padding:15px;font-size:15px;font-weight:700;
@@ -587,20 +613,25 @@ a{text-decoration:none;}
         <div class="drw-sum-cnt" id="cartItemCount">0개</div>
       </div>
       <div style="text-align:right">
-        <div class="drw-sum-lbl">예상 합계</div>
-        <div class="drw-sum-price" id="cartTotalDisp">₩0</div>
-        <div class="drw-sum-inq" id="cartInqLabel" style="display:none">가격문의 포함</div>
+        <div class="drw-sum-inq" id="cartInqLabel" style="display:none;color:rgba(255,255,255,.8);font-size:11px;">가격문의 포함</div>
       </div>
     </div>
   </div>
   <div class="drw-body" id="cartBody"></div>
   <div class="drw-ftr">
-    <button class="quote-btn" id="quoteBtn" disabled>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
-      </svg>
-      견적 요청하기
-    </button>
+    <div class="drw-total-row">
+      <span class="drw-total-lbl">총 합계 <span style="font-size:10px;color:var(--tx3)">(VAT 별도)</span></span>
+      <span class="drw-total-val" id="cartTotalDisp">₩0</span>
+    </div>
+    <div class="drw-ftr-btns">
+      <button class="drw-clear-btn" id="trashBtn2">전체 삭제</button>
+      <button class="quote-btn" id="quoteBtn" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="17" height="17">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        견적요청
+      </button>
+    </div>
   </div>
 </div>
 
@@ -872,31 +903,29 @@ function renderCart() {
   body.innerHTML = cart.map((item, idx)=>`
     <div class="c-item">
       <div class="c-item-hd">
-        <div class="c-item-num">${idx+1}</div>
         <div class="c-item-info">
           <div class="c-item-name">${esc(item.groupName)}</div>
           <div class="c-item-opt">${esc(item.optName)}</div>
         </div>
         <button class="c-item-rm" onclick="rmCartItem('${item.key}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
           </svg>
         </button>
       </div>
+      <div class="c-qty">
+        <button class="cq-btn" onclick="chgCartQty('${item.key}',-1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="cq-num">${item.qty}</div>
+        <button class="cq-btn" onclick="chgCartQty('${item.key}',1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
       <div class="c-item-ft">
-        <div>${item.price!=null
-          ? `<span class="c-item-price">₩${(item.price*item.qty).toLocaleString()}</span>`
+        ${item.price!=null
+          ? `<span class="c-item-price">₩${(item.price*item.qty).toLocaleString()}원</span><span class="c-item-vat">(VAT 별도)</span>`
           : `<span class="c-item-inq">가격문의</span>`}
-        </div>
-        <div class="c-qty">
-          <button class="cq-btn" onclick="chgCartQty('${item.key}',-1)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </button>
-          <div class="cq-num">${item.qty}</div>
-          <button class="cq-btn" onclick="chgCartQty('${item.key}',1)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </button>
-        </div>
       </div>
     </div>`).join('');
 
@@ -1048,6 +1077,11 @@ function toast(msg) {
 document.getElementById('cartBtn').onclick = openCart;
 document.getElementById('cartClose').onclick = closeCart;
 document.getElementById('cart-ov').onclick = closeCart;
+document.getElementById('trashBtn2')?.addEventListener('click', ()=>{
+  if(cart.length && confirm('장바구니를 전체 비우시겠습니까?')){
+    cart=[]; updateBadge(); renderCart(); toast('장바구니가 비워졌습니다');
+  }
+});
 document.getElementById('trashBtn').onclick = ()=>{
   if(cart.length && confirm('장바구니를 비우시겠습니까?')){
     cart=[]; updateBadge(); toast('장바구니가 비워졌습니다');
