@@ -322,6 +322,11 @@ a{text-decoration:none;}
 }
 .drw-hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .drw-title{font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;}
+.drw-count-badge{
+  background:rgba(255,255,255,.25);color:#fff;
+  font-size:12px;font-weight:600;
+  padding:2px 9px;border-radius:var(--r50);
+}
 .drw-title svg{width:20px;height:20px;opacity:.9;}
 .drw-hdr-btns{display:flex;align-items:center;gap:6px;}
 .drw-trash,.drw-close{
@@ -333,15 +338,7 @@ a{text-decoration:none;}
 .drw-close:hover{background:rgba(255,255,255,.3);}
 .drw-trash svg,.drw-close svg{width:16px;height:16px;}
 
-/* 헤더 요약 */
-.drw-summary{
-  background:rgba(255,255,255,.15);border-radius:var(--r12);
-  padding:12px 14px;display:flex;align-items:center;justify-content:space-between;
-}
-.drw-sum-lbl{font-size:12px;color:rgba(255,255,255,.75);}
-.drw-sum-cnt{font-size:13px;font-weight:700;color:#fff;}
-.drw-sum-price{font-size:18px;font-weight:800;color:#fff;text-align:right;}
-.drw-sum-inq{font-size:11px;color:rgba(255,255,255,.7);text-align:right;}
+
 
 /* 바디 */
 .drw-body{flex:1;overflow-y:auto;padding:0;background:#fff;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;}
@@ -512,7 +509,7 @@ a{text-decoration:none;}
 .state-box p{font-size:14px;line-height:1.7;}
 .retry-btn{margin-top:16px;background:var(--grad);color:#fff;border:none;border-radius:var(--r50);padding:12px 30px;font-size:13px;font-weight:600;box-shadow:0 4px 14px rgba(98,70,234,.3);}
 
-/* ── Toast ── */
+/* ── Toast (일반) ── */
 #toast{
   position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(8px);
   background:var(--tx1);color:#fff;padding:11px 22px;border-radius:var(--r50);
@@ -522,6 +519,43 @@ a{text-decoration:none;}
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 @media(min-width:640px){#toast{bottom:28px;}}
+
+/* ── 담기 확인 팝업 ── */
+#cart-popup{
+  position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(12px);
+  z-index:700;opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;width:min(360px,calc(100vw - 32px));
+}
+#cart-popup.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+@media(min-width:640px){#cart-popup{bottom:32px;}}
+.cp-inner{
+  background:#fff;border-radius:var(--r16);
+  box-shadow:0 8px 40px rgba(0,0,0,.18);
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;
+}
+.cp-icon{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.cp-icon svg{width:18px;height:18px;color:#fff;}
+.cp-text{flex:1;min-width:0;}
+.cp-name{font-size:12px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cp-opt{font-size:13px;font-weight:600;color:var(--tx1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cp-undo{
+  background:none;border:1.5px solid var(--bd);border-radius:var(--r8);
+  padding:7px 14px;font-size:12px;font-weight:600;color:var(--tx2);
+  white-space:nowrap;transition:all .15s;flex-shrink:0;
+}
+.cp-undo:hover{border-color:var(--red);color:var(--red);}
+.cp-bar{
+  height:3px;background:var(--bd2);border-radius:2px;margin-top:10px;overflow:hidden;
+}
+.cp-bar-fill{
+  height:100%;background:var(--grad);border-radius:2px;
+  width:100%;transition:width linear;
+}
 </style>
 </head>
 <body>
@@ -592,28 +626,14 @@ a{text-decoration:none;}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
         </svg>
-        견적 장바구니
+        장바구니 <span id="cartItemCount" class="drw-count-badge"></span>
       </span>
       <div class="drw-hdr-btns">
-        <button class="drw-trash" id="trashBtn" title="전체 비우기">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
-          </svg>
-        </button>
         <button class="drw-close" id="cartClose">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
         </button>
-      </div>
-    </div>
-    <div class="drw-summary">
-      <div>
-        <div class="drw-sum-lbl">선택 품목</div>
-        <div class="drw-sum-cnt" id="cartItemCount">0개</div>
-      </div>
-      <div style="text-align:right">
-        <div class="drw-sum-inq" id="cartInqLabel" style="display:none;color:rgba(255,255,255,.8);font-size:11px;">가격문의 포함</div>
       </div>
     </div>
   </div>
@@ -675,6 +695,23 @@ a{text-decoration:none;}
 </div>
 
 <div id="toast"></div>
+
+<!-- ══ 담기 확인 팝업 ══ -->
+<div id="cart-popup">
+  <div class="cp-inner">
+    <div class="cp-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <div class="cp-text">
+      <div class="cp-name" id="cp-name"></div>
+      <div class="cp-opt" id="cp-opt"></div>
+    </div>
+    <button class="cp-undo" id="cp-undo-btn">취소</button>
+  </div>
+  <div class="cp-bar"><div class="cp-bar-fill" id="cp-bar-fill"></div></div>
+</div>
 
 <script>
 // ══════════════════════════════════════════════════════════════
@@ -846,7 +883,55 @@ function addCart(gi, oi) {
   const ex = cart.find(c=>c.key===key);
   if (ex) ex.qty += qty; else cart.push({key,groupName:p.name,optName:o.n,price:o.p,qty});
   updateBadge();
-  toast(`장바구니에 담겼습니다 🛒`);
+  showCartPopup(key, p.name, o.n);
+}
+
+// ── 담기 확인 팝업 ──
+let cpTimer = null;
+let cpBarTimer = null;
+const CP_DURATION = 4000; // 4초 후 사라짐
+
+function showCartPopup(key, groupName, optName) {
+  clearTimeout(cpTimer);
+  cancelAnimationFrame(cpBarTimer);
+
+  const popup  = document.getElementById('cart-popup');
+  const nameEl = document.getElementById('cp-name');
+  const optEl  = document.getElementById('cp-opt');
+  const undoBtn= document.getElementById('cp-undo-btn');
+  const barFill= document.getElementById('cp-bar-fill');
+
+  nameEl.textContent = groupName;
+  optEl.textContent  = optName + (cart.find(c=>c.key===key)?.qty > 1
+    ? ' · ' + cart.find(c=>c.key===key).qty + '개' : '');
+
+  // 취소 버튼 — 장바구니에서 해당 항목 제거
+  undoBtn.onclick = () => {
+    rmCartItem(key);
+    hideCartPopup();
+    toast('장바구니에서 제거됐습니다');
+  };
+
+  // 팝업 표시
+  popup.classList.add('show');
+
+  // 프로그레스 바 애니메이션
+  barFill.style.transition = 'none';
+  barFill.style.width = '100%';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      barFill.style.transition = `width ${CP_DURATION}ms linear`;
+      barFill.style.width = '0%';
+    });
+  });
+
+  // 자동 숨김
+  cpTimer = setTimeout(() => hideCartPopup(), CP_DURATION);
+}
+
+function hideCartPopup() {
+  document.getElementById('cart-popup')?.classList.remove('show');
+  clearTimeout(cpTimer);
 }
 
 function rmCartItem(key) {
@@ -880,9 +965,9 @@ function renderCart() {
   const cntEl = document.getElementById('cartItemCount');
   const totEl = document.getElementById('cartTotalDisp');
   const inqEl = document.getElementById('cartInqLabel');
-  if(cntEl) cntEl.textContent = cart.length + '개 품목 · ' + totalQty + '개';
+  if(cntEl) cntEl.textContent = cart.length > 0 ? '(' + cart.length + ')' : '';
   if(totEl) totEl.textContent = '₩' + total.toLocaleString();
-  if(inqEl) inqEl.style.display = hasInq ? 'block' : 'none';
+  // inqLabel removed
 
   if (!cart.length) {
     body.innerHTML = `
@@ -894,7 +979,7 @@ function renderCart() {
         </svg>
         <p>아직 담긴 상품이 없습니다<br>상품을 선택하고 담기를 눌러주세요</p>
       </div>`;
-    if(cntEl) cntEl.textContent = '0개';
+    if(cntEl) cntEl.textContent = '';
     if(totEl) totEl.textContent = '₩0';
     document.getElementById('quoteBtn').disabled = true;
     return;
@@ -1082,11 +1167,7 @@ document.getElementById('trashBtn2')?.addEventListener('click', ()=>{
     cart=[]; updateBadge(); renderCart(); toast('장바구니가 비워졌습니다');
   }
 });
-document.getElementById('trashBtn').onclick = ()=>{
-  if(cart.length && confirm('장바구니를 비우시겠습니까?')){
-    cart=[]; updateBadge(); toast('장바구니가 비워졌습니다');
-  }
-};
+// trashBtn removed (moved to footer)
 document.getElementById('quoteBtn').onclick = openModal;
 document.getElementById('modalClose').onclick = closeModal;
 document.getElementById('modal-wrap').addEventListener('click', e=>{
