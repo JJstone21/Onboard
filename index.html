@@ -765,23 +765,7 @@ document.addEventListener('click', e=>{
     document.getElementById('srchBtn').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`;
   }
 });
-document.getElementById('cartBtn').onclick = openCart;
-document.getElementById('cartClose').onclick = closeCart;
-document.getElementById('cart-ov').onclick = closeCart;
-document.getElementById('trashBtn').onclick = ()=>{
-  if(cart.length && confirm('장바구니를 비우시겠습니까?')){
-    cart=[]; updateBadge(); toast('장바구니가 비워졌습니다');
-  }
-};
-document.getElementById('quoteBtn').onclick = openModal;
-document.getElementById('modalClose').onclick = closeModal;
-document.getElementById('modal-wrap').addEventListener('click', e=>{
-  if(e.target===document.getElementById('modal-wrap')) closeModal();
-});
-document.addEventListener('keydown', e=>{
-  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();if(!srchOpen)toggleSearch();else document.getElementById('srchInp').focus();}
-  if(e.key==='Escape') closeModal();
-});
+// 이벤트 바인딩은 하단에서 처리
 
 // ══════════════════════════════════════════════════════════════
 //  9. 초기 로드
@@ -919,7 +903,7 @@ function copyQuote() {
 }
 
 // ── 복사 모달 이벤트 ──
-document.getElementById('cmClose').onclick = function(){ document.getElementById('copy-modal-wrap').classList.remove('open'); };
+var cmCloseEl = document.getElementById('cmClose'); if(cmCloseEl) cmCloseEl.addEventListener('click', function(){ document.getElementById('copy-modal-wrap').classList.remove('open'); });
 document.getElementById('copy-modal-wrap').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
 document.getElementById('cmCopyBtn').addEventListener('click', function(){
   var ta = document.getElementById('cmTextarea');
@@ -945,14 +929,19 @@ document.getElementById('trashBtn2').addEventListener('click', function(){
   }
 });
 
-// ── 기타 이벤트 ──
-document.getElementById('cartBtn').onclick = openCart;
-document.getElementById('cartClose').onclick = closeCart;
-document.getElementById('cart-ov').onclick = closeCart;
-document.getElementById('quoteBtn').onclick = copyQuote;
-document.getElementById('modalClose').onclick = closeModal;
-document.getElementById('modal-wrap').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
-document.getElementById('submitBtn').onclick = sendToKakao;
+// ── 기타 이벤트 (null 안전 처리) ──
+function bindId(id, event, fn) {
+  var el = document.getElementById(id);
+  if(el) el.addEventListener(event, fn);
+}
+bindId('cartBtn',   'click', openCart);
+bindId('cartClose', 'click', closeCart);
+bindId('cart-ov',   'click', closeCart);
+bindId('quoteBtn',  'click', copyQuote);
+bindId('modalClose','click', closeModal);
+bindId('submitBtn', 'click', sendToKakao);
+var mw = document.getElementById('modal-wrap');
+if(mw) mw.addEventListener('click', function(e){ if(e.target===this) closeModal(); });
 document.addEventListener('keydown', function(e){
   if((e.ctrlKey||e.metaKey)&&e.key==='k'){ e.preventDefault(); toggleSearch(); }
   if(e.key==='Escape') closeModal();
