@@ -129,9 +129,10 @@ a{text-decoration:none;}
 .opt-add:active{transform:scale(.96);}
 @media(max-width:639px){.opt-add{padding:0 16px;width:auto;}}
 .bulk-bar{
-  display:flex;gap:8px;padding:12px 14px;
-  border-top:1.5px solid var(--bd2);
-  background:var(--bd2);
+  display:none;gap:8px;padding:12px 14px;
+  border-top:1.5px solid var(--bd);
+  background:var(--bg);
+  border-radius:0 0 var(--r16) var(--r16);
 }
 @media(min-width:640px){.bulk-bar{padding:12px 18px;}}
 .bulk-all-btn{
@@ -541,10 +542,6 @@ function renderList() {
           </div>
           <button class="opt-add" onclick="addCart(${gi},${oi})">담기</button>
         </div>`).join('')}
-        <div class="bulk-bar">
-          <button class="bulk-all-btn" onclick="addAllCart(${gi})">일괄 담기</button>
-          <button class="bulk-quote-btn" onclick="addAllAndQuote(${gi})">&#x1F6D2; 견적 요청</button>
-        </div>
       </div>
     </div>`;
   }).join('');
@@ -557,6 +554,15 @@ function toggleCard(gi) {
     el.classList.toggle('open', id === openIdx);
   });
 }
+
+// q-inp 직접 입력 시 bulk-bar 업데이트
+document.addEventListener('input', function(e) {
+  if (e.target && e.target.classList.contains('q-inp')) {
+    var id = e.target.id; // q-gi-oi
+    var parts = id.split('-');
+    if (parts.length === 3) updateBulkBar(parseInt(parts[1]));
+  }
+});
 
 function chgQ(gi,oi,d) {
   const inp = document.getElementById(`q-${gi}-${oi}`);
@@ -909,7 +915,21 @@ function addCart(gi, oi) {
   // 담기 후 수량 0으로 초기화
   if (inp) inp.value = '0';
   updateBadge();
+  updateBulkBar(gi);
   showCartPopup(key, p.name, o.n);
+}
+
+// ── bulk-bar 표시/숨김 ──
+function updateBulkBar(gi) {
+  var bar = document.getElementById('bulk-'+gi);
+  if (!bar) return;
+  var p = CATALOG[gi];
+  if (!p) return;
+  var hasQty = p.opts.some(function(o, oi) {
+    var inp = document.getElementById('q-'+gi+'-'+oi);
+    return inp && parseInt(inp.value) > 0;
+  });
+  bar.style.display = hasQty ? 'flex' : 'none';
 }
 
 // ── 일괄 담기 ──
